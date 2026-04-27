@@ -109,7 +109,7 @@ $(document).ready(function () {
 }); // FIM DO DOCUMENT.READY
 
 
-// --- 4. FUNÇÕES AUXILIARES GLOBAIS ---
+// --- FUNÇÕES AUXILIARES GLOBAIS ---
 function AtualizarGridBeneficiarios() {
     var tbody = $('#gridBeneficiarios tbody');
     tbody.empty();

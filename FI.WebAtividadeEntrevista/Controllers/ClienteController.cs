@@ -101,11 +101,6 @@ namespace WebAtividadeEntrevista.Controllers
                 Response.StatusCode = 400;
                 return Json("CPF informado é inválido.");
             }
-            if (bo.VerificarExistencia(model.CPF))
-            {
-                Response.StatusCode = 400;
-                return Json("CPF já cadastrado no sistema.");
-            }
 
             if (!this.ModelState.IsValid)
             {
@@ -132,7 +127,28 @@ namespace WebAtividadeEntrevista.Controllers
                     Sobrenome = model.Sobrenome,
                     Telefone = model.Telefone
                 });
-                               
+
+                //limpa e reescreve no BD
+                BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+                // Exclui todos os beneficiários antigos deste cliente no banco
+                boBeneficiario.Excluir(model.Id);
+
+                // pega a lista nova (com os que você não excluiu na tela) e insere de novo
+                if (model.Beneficiarios != null && model.Beneficiarios.Count > 0)
+                {
+                    foreach (var ben in model.Beneficiarios)
+                    {
+                        boBeneficiario.Incluir(new FI.AtividadeEntrevista.DML.Beneficiario()
+                        {
+                            CPF = ben.CPF,
+                            Nome = ben.Nome,
+                            IdCliente = model.Id // Usa o Id do cliente atual
+                        });
+                    }
+                }
+
+
                 return Json("Cadastro alterado com sucesso");
             }
         }
